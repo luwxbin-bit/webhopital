@@ -1,52 +1,266 @@
-# WebHopital - Hệ thống Bệnh viện Trực tuyến
+# WebHopital - Medical Appointment Booking System
+**Hệ thống Đặt Lịch Khám Bệnh Trực tuyến**
 
-**Static Site Version** - Hospital Management System
+A modern, static web application for booking medical appointments with complete user management system.
 
-## ✨ Tính năng
+## ✨ Core Features | Tính năng chính
 
-- 📋 Danh sách bác sĩ chuyên khoa
-- 🏥 Đặt lịch khám nhanh chóng  
-- 👤 Quản lý thông tin bệnh nhân
-- 💬 Chatbot hỗ trợ bệnh nhân
-- 📱 Giao diện responsive
+- ✅ **User Authentication** - Sign up, login, logout with localStorage persistence
+- ✅ **Doctor Directory** - Browse doctors, filter by specialty, search functionality
+- ✅ **Appointment Booking** - 3-step booking process with date/time selection
+- ✅ **Appointment Management** - View, reschedule, cancel appointments
+- ✅ **User Profile** - Edit personal info, change password, view statistics
+- ✅ **Notifications** - Toast notifications and notification center
+- ✅ **Responsive Design** - Mobile, tablet, and desktop support
+- ✅ **No Backend Required** - All data stored in browser localStorage
 
-## 🚀 Truy cập Trực tiếp
+## 🚀 Live Demo
 
-Truy cập trang web: **[https://luwxbin-bit.github.io/webhopital](https://luwxbin-bit.github.io/webhopital)**
+**Visit**: https://luwxbin-bit.github.io/webhopital
 
-## 📖 Hướng dẫn Sử dụng
+## 📁 Project Structure
 
-### Đăng nhập / Đăng ký
-- Truy cập trang **Login** hoặc **Sign Up**
-- Nhập thông tin và đăng nhập
-- Dữ liệu được lưu trên thiết bị (localStorage)
+```
+webhopital/
+├── index.html                          # Homepage with hero & featured doctors
+├── css/
+│   └── style.css                      # Comprehensive responsive styling (~1000 lines)
+├── js/
+│   ├── app.js                         # Main app initialization (220 lines)
+│   ├── utils/
+│   │   ├── constants.js               # Global constants & demo data
+│   │   └── storage.js                 # localStorage abstraction layer
+│   └── modules/
+│       ├── auth.js                    # Authentication module
+│       ├── doctors.js                 # Doctor management
+│       ├── appointments.js            # Appointment booking & tracking
+│       └── notifications.js           # Notification system
+└── pages/
+    ├── login.html                     # Login page (220 lines)
+    ├── signup.html                    # Signup with validation (280 lines)
+    ├── doctors.html                   # Doctor directory with filters (280 lines)
+    ├── booking.html                   # Multi-step booking form (350 lines)
+    ├── my-appointments.html          # Appointment history (320 lines)
+    └── profile.html                   # User profile & account settings (430 lines)
+```
 
-### Đặt lịch khám
-1. Vào trang **Đặt lịch khám**
-2. Chọn bác sĩ, ngày, giờ mong muốn
-3. Nhập thông tin liên lạc
-4. Xác nhận - Lịch hẹn được lưu trên thiết bị
+## 🛠️ Technology Stack
 
-### Xem lịch hẹn
-- Vào **Lịch hẹn của tôi** để xem tất cả lịch khám
-- Dữ liệu được lưu cục bộ trên browser
+| Technology | Details |
+|-----------|---------|
+| **Frontend** | Vanilla JavaScript (ES6+), HTML5, CSS3 |
+| **Data Storage** | localStorage (client-side only) |
+| **Hosting** | GitHub Pages |
+| **Icons** | Font Awesome 6.0.0 |
+| **Backend** | None - Static site |
+| **Database** | None - localStorage |
 
-## 🛠️ Công nghệ
+## 🎯 Key Modules
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Lưu trữ**: localStorage (Browser)
-- **Hosting**: GitHub Pages
-- **Icons**: Font Awesome
+### 1. Authentication (`js/modules/auth.js`)
+```javascript
+AuthModule.signup(email, password)          // Create new account
+AuthModule.login(email, password)           // Login user
+AuthModule.logout()                         // Logout
+AuthModule.getCurrentUser()                 // Get logged-in user
+AuthModule.updateProfile(updates)           // Update user info
+AuthModule.protectPage()                    // Redirect if not logged in
+```
 
-## 📁 Cấu trúc Dự án
+### 2. Doctor Management (`js/modules/doctors.js`)
+```javascript
+DoctorModule.getAll()                       // Get all doctors
+DoctorModule.filterBySpecialty(specialty)   // Filter by specialty
+DoctorModule.search(query)                  // Search by name/specialty
+DoctorModule.getAvailableSlots(doctorId)    // Get available time slots
+DoctorModule.getFeatured()                  // Get top 6 doctors
+```
 
-## Tài khoản Demo
+### 3. Appointments (`js/modules/appointments.js`)
+```javascript
+AppointmentModule.book(data)                // Book appointment
+AppointmentModule.getUserAppointments(id)   // Get user's appointments
+AppointmentModule.getUpcoming(id)           // Get upcoming appointments
+AppointmentModule.getPast(id)               // Get past appointments
+AppointmentModule.cancel(appointmentId)     // Cancel appointment
+AppointmentModule.update(id, updates)       // Reschedule appointment
+```
 
-Sau khi khởi tạo database, bạn có thể đăng nhập với các tài khoản sau:
+### 4. Notifications (`js/modules/notifications.js`)
+```javascript
+NotificationModule.add(notification)        // Add & show notification
+NotificationModule.showToast(message, type) // Show toast notification
+NotificationModule.getUnread()              // Get unread notifications
+NotificationModule.markAsRead(id)           // Mark as read
+```
 
-### Admin
-- Email: `admin@bvquandany.com`
-- Password: `123456`
+### 5. Storage (`js/utils/storage.js`)
+```javascript
+UserStorage.setLoggedInUser(user)           // Save user session
+AppointmentStorage.add(appointment)         // Save appointment
+NotificationStorage.add(notification)       // Save notification
+```
+
+## 📖 User Guide | Hướng dẫn Sử dụng
+
+### Signing Up | Đăng Ký
+1. Click **Sign Up** in navbar
+2. Enter email, password, name
+3. Check password requirements (min 6 chars, uppercase letter, number)
+4. Accept Terms & Conditions
+5. Click **Sign Up** - Auto redirect to home
+
+### Logging In | Đăng Nhập
+1. Click **Login** in navbar
+2. Enter email and password
+3. Check **Remember Email** to auto-fill next time
+4. Click **Login** - Auto redirect to home if successful
+
+### Booking Appointment | Đặt Lịch Khám
+1. Click **Book Appointment** button
+2. **Step 1**: Select doctor from dropdown
+3. **Step 2**: Choose date and available time slot
+4. **Step 3**: Enter patient name, phone, symptoms (optional)
+5. Click **Confirm Booking**
+6. Appointment saved to your account
+
+### Managing Appointments | Quản Lý Lịch Hẹn
+1. Go to **My Appointments** page
+2. View **Upcoming**, **Past**, or **All** appointments
+3. See appointment details and time remaining
+4. Click **Reschedule** to change date/time
+5. Click **Cancel** to cancel appointment
+
+### Profile Management | Quản Lý Hồ Sơ
+1. Click profile icon in navbar or go to **Profile**
+2. **General Tab**: Edit name, phone, address, medical notes
+3. **Security Tab**: Change password with confirmation
+4. **Appointments Tab**: View recent upcoming appointments
+5. **Logout Tab**: Click logout to end session
+
+## 🔐 Default Demo Accounts | Tài khoản Demo
+
+### Pre-loaded Test Accounts:
+```
+Email: patient1@example.com | Password: password123
+Email: patient2@example.com | Password: password123
+```
+
+**Or use Sign Up page to create your own account**
+
+### Demo Doctors Available:
+- Dr. Nguyễn Văn A - Cardiology (4.8⭐)
+- Dr. Trần Thị B - Neurology (4.7⭐)
+- Dr. Hoàng Văn C - Dermatology (4.6⭐)
+- Dr. Lý Thị D - Psychiatry (4.5⭐)
+- Dr. Võ Văn E - Orthopedics (4.5⭐)
+
+## 💾 Data Persistence
+
+All data is stored in browser localStorage:
+- **User accounts & sessions**: `webhopital_users`
+- **Appointments**: `webhopital_appointments`
+- **Notifications**: `webhopital_notifications`
+
+**Data persists across browser sessions** until localStorage is cleared.
+
+## 📱 Responsive Design
+
+| Device | Breakpoint | Layout |
+|--------|-----------|--------|
+| Desktop | 1200px+ | Full sidebar + content |
+| Tablet | 768px - 1199px | Adjusted margins |
+| Mobile | < 768px | Single column, collapsed nav |
+
+All pages are fully responsive and mobile-friendly.
+
+## 🎨 Design Features
+
+### Color Scheme
+- **Primary**: Professional medical blue (#007bff)
+- **Success**: Green for confirmed appointments (#28a745)
+- **Warning**: Orange for pending (#ffc107)
+- **Danger**: Red for cancelled/urgent (#dc3545)
+
+### Components
+- Clean, modern buttons with hover effects
+- Card-based layout for content
+- Form validation with error messages
+- Toast notifications with auto-dismiss
+- Status badges for appointments
+- Responsive navigation bar
+
+## 🚀 Deployment
+
+### Option 1: Local Testing
+```bash
+# Clone repository
+git clone https://github.com/luwxbin-bit/webhopital.git
+
+# Open with Live Server (VS Code) or
+python -m http.server 8000
+
+# Visit http://localhost:8000
+```
+
+### Option 2: GitHub Pages (Already Configured)
+The site is ready at: https://luwxbin-bit.github.io/webhopital
+
+If Pages not enabled:
+1. Go to repository **Settings** → **Pages**
+2. Set Source to "Deploy from a branch"
+3. Select **main** branch and **/** (root)
+4. Save
+
+## 🔮 Future Enhancements
+
+### Phase 2 - Admin Dashboard
+- [ ] Doctor management (CRUD)
+- [ ] Appointment approval system
+- [ ] User management
+- [ ] Analytics & reporting
+
+### Phase 3 - Backend Integration
+- [ ] PostgreSQL database
+- [ ] Node.js/Express API
+- [ ] Email notifications
+- [ ] SMS notifications
+
+### Phase 4 - Advanced Features
+- [ ] Prescription management
+- [ ] Medical records
+- [ ] Video consultation
+- [ ] Payment integration
+
+## 🐛 Troubleshooting
+
+**Problem**: Data not saving after booking
+- **Solution**: Check if localStorage is enabled in browser settings
+
+**Problem**: Can't login after signup
+- **Solution**: In private mode, data clears. Sign up again in normal mode
+
+**Problem**: Styles look broken
+- **Solution**: Clear browser cache (Ctrl+Shift+Delete) and reload
+
+**Problem**: Getting module errors in console
+- **Solution**: Ensure app.js is fully loaded before navigating
+
+## 📞 Contact & Support
+
+- **Repository**: https://github.com/luwxbin-bit/webhopital
+- **Issues**: GitHub Issues page
+- **Author**: WebHopital Development Team
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+---
+
+**Last Updated**: December 2024  
+**Status**: ✅ Fully Functional  
+**Version**: 1.0.0 - Static Site Release
 
 ### Bác sĩ mẫu
 - Email: `bs.nguyenvana@bvquandany.com`
