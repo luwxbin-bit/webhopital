@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Bác Sĩ - WebHopital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .doctors-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .doctors-sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .filter-btn {
+            width: 100%;
+            padding: 10px;
+            background: #00a8e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #0095c9;
+        }
+
+        .doctors-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .doctor-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .doctor-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .doctor-item-image {
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+
+        .doctor-item-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .doctor-item-header {
+            margin-bottom: 10px;
+        }
+
+        .doctor-item-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .doctor-item-specialty {
+            color: #00a8e8;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .doctor-item-info {
+            font-size: 13px;
+            color: #666;
+            margin: 8px 0;
+        }
+
+        .doctor-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .doctor-item-rating {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .doctor-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .doctor-item-actions .btn {
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .doctors-container {
+                grid-template-columns: 1fr;
+            }
+
+            .doctors-sidebar {
+                position: relative;
+                top: 0;
+            }
+
+            .doctor-item {
+                grid-template-columns: 1fr;
+            }
+
+            .doctor-item-image {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-hospital"></i> WebHopital
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="/pages/doctors.html">Bác sĩ</a></li>
+                <li><a href="/#about">Về chúng tôi</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn btn-primary" data-auth-btn style="text-decoration: none; cursor: pointer; margin: 0;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section style="padding: 40px 20px; background: #f5f5f5;">
+        <div class="container">
+            <h2 style="margin-bottom: 40px;"><i class="fas fa-stethoscope"></i> Danh Sách Bác Sĩ</h2>
+
+            <div class="doctors-container">
+                <!-- SIDEBAR -->
+                <aside class="doctors-sidebar">
+                    <div class="filter-group">
+                        <h3><i class="fas fa-search"></i> Tìm kiếm</h3>
+                        <input type="text" id="searchInput" placeholder="Nhập tên bác sĩ...">
+                    </div>
+
+                    <div class="filter-group">
+                        <h3><i class="fas fa-stethoscope"></i> Chuyên khoa</h3>
+                        <select id="specialtyFilter">
+                            <option value="">Tất cả chuyên khoa</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3><i class="fas fa-star"></i> Đánh giá</h3>
+                        <select id="ratingFilter">
+                            <option value="">Tất cả</option>
+                            <option value="4.5">Từ 4.5⭐ trở lên</option>
+                            <option value="4">Từ 4⭐ trở lên</option>
+                            <option value="3.5">Từ 3.5⭐ trở lên</option>
+                        </select>
+                    </div>
+
+                    <button class="filter-btn" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i> Áp dụng lọc
+                    </button>
+
+                    <button class="filter-btn" style="background: #999; margin-top: 10px;" onclick="clearFilters()">
+                        <i class="fas fa-redo"></i> Đặt lại
+                    </button>
+                </aside>
+
+                <!-- DOCTORS LIST -->
+                <div>
+                    <div id="doctorsList" class="doctors-list">
+                        <!-- Doctors will be loaded here -->
+                    </div>
+                    <div id="noResults" style="text-align: center; padding: 40px; display: none;">
+                        <i class="fas fa-search" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
+                        <p style="color: #999; font-size: 16px;">Không tìm thấy bác sĩ phù hợp. Vui lòng thử lại.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4><i class="fas fa-hospital"></i> WebHopital</h4>
+                <p>Đặt lịch khám trực tuyến dễ dàng, an toàn và tiện lợi</p>
+            </div>
+            <div class="footer-section">
+                <h4>Liên Kết Nhanh</h4>
+                <ul>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/pages/doctors.html">Bác sĩ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebHopital</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/app.js"></script>
+
+    <script>
+        let allDoctors = DoctorModule.getAll();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate filters
+            const specialtyFilter = document.getElementById('specialtyFilter');
+            DoctorModule.getSpecialties().forEach(specialty => {
+                const option = document.createElement('option');
+                option.value = specialty;
+                option.textContent = specialty;
+                specialtyFilter.appendChild(option);
+            });
+
+            // Load doctors
+            displayDoctors(allDoctors);
+
+            // Get filters from URL
+            const params = new URLSearchParams(window.location.search);
+            const search = params.get('search');
+            const specialty = params.get('specialty');
+
+            if (search) {
+                document.getElementById('searchInput').value = search;
+            }
+            if (specialty) {
+                document.getElementById('specialtyFilter').value = specialty;
+            }
+
+            applyFilters();
+        });
+
+        function displayDoctors(doctors) {
+            const doctorsList = document.getElementById('doctorsList');
+            const noResults = document.getElementById('noResults');
+
+            if (doctors.length === 0) {
+                doctorysList.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            doctorsList.style.display = 'grid';
+            doctorsList.innerHTML = '';
+
+            doctors.forEach(doctor => {
+                const card = document.createElement('div');
+                card.className = 'doctor-item';
+                card.innerHTML = `
+                    <div class="doctor-item-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="doctor-item-body">
+                        <div class="doctor-item-header">
+                            <div class="doctor-item-name">${doctor.name}</div>
+                            <div class="doctor-item-specialty">${doctor.specialty}</div>
+                        </div>
+                        <div>
+                            <div class="doctor-item-info">
+                                <i class="fas fa-hospital"></i> ${doctor.hospital}
+                            </div>
+                            <div class="doctor-item-info">
+                                <i class="fas fa-briefcase"></i> ${doctor.experience} kinh nghiệm
+                            </div>
+                        </div>
+                        <div class="doctor-item-footer">
+                            <div class="doctor-item-rating">
+                                <i class="fas fa-star"></i> ${doctor.rating}/5.0
+                            </div>
+                            <div class="doctor-item-actions">
+                                <a href="booking.html?doctor=${doctor.id}" class="btn btn-primary">
+                                    <i class="fas fa-calendar"></i> Đặt lịch
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                doctorsList.appendChild(card);
+            });
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const specialty = document.getElementById('specialtyFilter').value;
+            const rating = parseFloat(document.getElementById('ratingFilter').value) || 0;
+
+            let filtered = allDoctors.filter(doctor => {
+                return (
+                    (!search || doctor.name.toLowerCase().includes(search) || doctor.specialty.toLowerCase().includes(search)) &&
+                    (!specialty || doctor.specialty === specialty) &&
+                    doctor.rating >= rating
+                );
+            });
+
+            displayDoctors(filtered);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('specialtyFilter').value = '';
+            document.getElementById('ratingFilter').value = '';
+            displayDoctors(allDoctors);
+        }
+
+        // Real-time search
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('specialtyFilter').addEventListener('change', applyFilters);
+        document.getElementById('ratingFilter').addEventListener('change', applyFilters);
+    </script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Lịch Khám - WebHopital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .booking-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        .booking-form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .doctor-preview {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .doctor-card-preview {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .doctor-preview-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            margin: 0 auto 15px;
+        }
+
+        .doctor-preview-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .doctor-preview-specialty {
+            color: #00a8e8;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .booking-summary {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .booking-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .booking-summary-item:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .step {
+            margin-bottom: 30px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .step-number {
+            background: #00a8e8;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .date-time-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .date-time-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .date-time-btn:hover {
+            border-color: #00a8e8;
+        }
+
+        .date-time-btn.selected {
+            background: #00a8e8;
+            color: white;
+            border-color: #00a8e8;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background:  #999;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 1050px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+
+            .doctor-preview {
+                position: relative;
+                top: 0;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-hospital"></i> WebHopital
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="/pages/doctors.html">Bác sĩ</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn btn-primary" data-auth-btn style="text-decoration: none; cursor: pointer; margin: 0;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section style="padding: 40px 20px; background: #f5f5f5;">
+        <div class="container">
+            <h2 style="margin-bottom: 40px;"><i class="fas fa-calendar-check"></i> Đặt Lịch Khám</h2>
+
+            <div class="booking-container">
+                <!-- BOOKING FORM -->
+                <form id="bookingForm" class="booking-form">
+                    <div class="alert alert-info" style="display: none;" id="infomsg">
+                        <i class="fas fa-info-circle"></i> Vui lòng đăng nhập để đặt lịch khám
+                    </div>
+
+                    <!-- STEP 1: DOCTOR SELECTION -->
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Chọn Bác Sĩ</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-stethoscope"></i> Bác sĩ</label>
+                            <select id="doctor" class="form-control" required>
+                                <option value="">-- Chọn bác sĩ --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: DATE & TIME SELECTION -->
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Chọn Ngày & Giờ</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Ngày khám</label>
+                            <input type="date" id="date" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-clock"></i> Giờ khám</label>
+                            <div class="date-time-selection" id="timeSlots"></div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: PATIENT INFO -->
+                    <div class="step">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Thông Tin Bệnh Nhân</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Họ và tên</label>
+                            <input type="text" id="name" class="form-control" placeholder="Nhập họ tên của bạn" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Số điện thoại</label>
+                                <input type="tel" id="phone" class="form-control" placeholder="Nhập số điện thoại" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <input type="email" id="email" class="form-control" placeholder="Nhập email của bạn" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-stethoscope"></i> Triệu chứng / Lý do khám</label>
+                            <textarea id="symptoms" class="form-control" placeholder="Mô tả các triệu chứng hoặc lý do khám..." style="height: 100px; resize: vertical;"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-clipboard"></i> Ghi chú (tùy chọn)</label>
+                            <textarea id="notes" class="form-control" placeholder="Thêm ghi chú khác..." style="height: 80px; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Xác Nhận Đặt Lịch
+                    </button>
+                </form>
+
+                <!-- DOCTOR PREVIEW & SUMMARY -->
+                <div class="doctor-preview">
+                    <div class="doctor-card-preview" id="doctorPreview" style="display: none;">
+                        <div class="doctor-preview-image">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="doctor-preview-name" id="previewName">-</div>
+                        <div class="doctor-preview-specialty" id="previewSpecialty">-</div>
+                        <div style="font-size: 13px; color: #666;">
+                            <p id="previewHospital" style="margin: 5px 0;">-</p>
+                            <p id="previewExperience" style="margin: 5px 0;">-</p>
+                            <p id="previewRating" style="margin: 5px 0;">-</p>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">
+                        <i class="fas fa-list"></i> Tóm Tắt Lịch Hẹn
+                    </h3>
+
+                    <div class="booking-summary">
+                        <div class="booking-summary-item">
+                            <span>Bác sĩ:</span>
+                            <strong id="summaryDoctor">Chưa chọn</strong>
+                        </div>
+                        <div class="booking-summary-item">
+                            <span>Ngày:</span>
+                            <strong id="summaryDate">Chưa chọn</strong>
+                        </div>
+                        <div class="booking-summary-item">
+                            <span>Giờ:</span>
+                            <strong id="summaryTime">Chưa chọn</strong>
+                        </div>
+                        <div class="booking-summary-item">
+                            <span>Trạng thái:</span>
+                            <strong id="summaryStatus" style="color: #ff9800;">Chờ xác nhận</strong>
+                        </div>
+                    </div>
+
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; font-size: 12px; color: #333; line-height: 1.6;">
+                        <i class="fas fa-info-circle" style="color: #00a8e8;"></i>
+                        <strong>Lưu ý:</strong> 
+                        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                            <li>Bạn sẽ nhận xác nhận qua email</li>
+                            <li>Nhắc lịch sẽ được gửi 1 ngày trước</li>
+                            <li>Có thể hủy/thay đổi lịch trước 24 giờ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebHopital</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/app.js"></script>
+
+    <script>
+        const bookingForm = document.getElementById('bookingForm');
+        const doctorSelect = document.getElementById('doctor');
+        const dateInput = document.getElementById('date');
+        const timeSlots = document.getElementById('timeSlots');
+        const selectedTimeBtn = null;
+
+        let selectedTime = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if logged in
+            if (!AuthModule.isLoggedIn()) {
+                document.getElementById('infomsg').style.display = 'block';
+            }
+
+            // Load doctors
+            const doctors = DoctorModule.getAll();
+            doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.id;
+                option.textContent = `${doctor.name} - ${doctor.specialty}`;
+                doctorSelect.appendChild(option);
+            });
+
+            // Get doctor from URL params
+            const params = new URLSearchParams(window.location.search);
+            const doctorId = params.get('doctor');
+            if (doctorId) {
+                doctorSelect.value = doctorId;
+                updateDoctorPreview();
+            }
+
+            // Event listeners
+            doctorSelect.addEventListener('change', updateDoctorPreview);
+            dateInput.addEventListener('change', updateTimeSlots);
+            bookingForm.addEventListener('submit', handleSubmit);
+        });
+
+        function updateDoctorPreview() {
+            const doctorId = doctorSelect.value;
+            if (!doctorId) {
+                document.getElementById('doctorPreview').style.display = 'none';
+                return;
+            }
+
+            const doctor = DoctorModule.getById(doctorId);
+            if (!doctor) return;
+
+            document.getElementById('doctorPreview').style.display = 'block';
+            document.getElementById('previewName').textContent = doctor.name;
+            document.getElementById('previewSpecialty').textContent = doctor.specialty;
+            document.getElementById('previewHospital').textContent = doctor.hospital;
+            document.getElementById('previewExperience').textContent = doctor.experience;
+            document.getElementById('previewRating').innerHTML = `<i class="fas fa-star"></i> ${doctor.rating}/5.0`;
+            document.getElementById('summaryDoctor').textContent = doctor.name;
+        }
+
+        function updateTimeSlots() {
+            const doctorId = doctorSelect.value;
+            const date = dateInput.value;
+
+            if (!doctorId || !date) {
+                timeSlots.innerHTML = '';
+                return;
+            }
+
+            const available = DoctorModule.getAvailableSlots(doctorId, date);
+            timeSlots.innerHTML = '';
+            selectedTime = null;
+
+            available.forEach(slot => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'date-time-btn';
+                btn.textContent = slot;
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Remove previous selection
+                    document.querySelectorAll('.date-time-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedTime = slot;
+                    updateSummary();
+                });
+                timeSlots.appendChild(btn);
+            });
+        }
+
+        function updateSummary() {
+            const doctor = DoctorModule.getById(doctorSelect.value);
+            const date = dateInput.value;
+
+            if (doctor) {
+                document.getElementById('summaryDoctor').textContent = doctor.name;
+            }
+            if (date) {
+                const dateObj = new Date(date);
+                document.getElementById('summaryDate').textContent = DateAppointmentModule.formatDate(date);
+            }
+            if (selectedTime) {
+                document.getElementById('summaryTime').textContent = selectedTime;
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const user = AuthModule.getCurrentUser();
+            if (!user) {
+                alert('Vui lòng đăng nhập để đặt lịch');
+                window.location.href = '/pages/login.html';
+                return;
+            }
+
+            const doctorId = doctorSelect.value;
+            const date = dateInput.value;
+            const symptoms = document.getElementById('symptoms').value;
+
+            if (!doctorId || !date || !selectedTime) {
+                alert('Vui lòng chọn bác sĩ, ngày và giờ khám');
+                return;
+            }
+
+            const result = await AppointmentModule.book({
+                doctorId: parseInt(doctorId),
+                date,
+                time: selectedTime,
+                symptoms,
+                appointmentType: 'consultation'
+            });
+
+            if (result.success) {
+                alert('✅ Đặt lịch thành công!');
+                window.location.href = '/pages/my-appointments.html';
+            } else {
+                alert('❌ Lỗi: ' + result.message);
+            }
+        }
+    </script>
+</body>
+</html>
