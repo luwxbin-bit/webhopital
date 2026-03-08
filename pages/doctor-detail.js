@@ -103,7 +103,7 @@ function loadDoctorDetail(doctorId) {
     }
 
     // Update page title
-    document.title = `${currentDoctor.name} - ${currentDoctor.specialty} | WebHopital`;
+    document.title = `${currentDoctor.name} - ${currentDoctor.specialty} | HealthSlot`;
 
     // Load basic info
     loadDoctorBasicInfo();

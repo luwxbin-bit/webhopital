@@ -21,7 +21,7 @@ const AuthModule = {
         }
 
         // Kiểm tra email đã tồn tại
-        const users = StorageManager.get('webhopital_users_db', []);
+        const users = StorageManager.get('healthslot_users_db', []);
         if (users.find(u => u.email === email)) {
           resolve({ success: false, message: 'Email đã được đăng ký' });
           return;
@@ -40,7 +40,7 @@ const AuthModule = {
         // Lưu password (thực tế nên hash)
         const userWithPassword = { ...user, password };
         users.push(userWithPassword);
-        StorageManager.set('webhopital_users_db', users);
+        StorageManager.set('healthslot_users_db', users);
 
         // Tạo token
         const token = 'token_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -63,7 +63,7 @@ const AuthModule = {
           return;
         }
 
-        const users = StorageManager.get('webhopital_users_db', []);
+        const users = StorageManager.get('healthslot_users_db', []);
         const user = users.find(u => u.email === email);
 
         if (!user) {

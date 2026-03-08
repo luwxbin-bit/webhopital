@@ -7,7 +7,7 @@ const App = {
    * Khởi động ứng dụng
    */
   init() {
-    console.log('🚀 WebHopital App initialized');
+    console.log('🚀 HealthSlot App initialized');
 
     // Cập nhật navbar
     this.updateNavbar();

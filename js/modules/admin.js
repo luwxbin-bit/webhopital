@@ -35,7 +35,7 @@ class AdminModule {
    */
   getAllUsers() {
     if (!this.isAdmin()) return [];
-    const users = JSON.parse(localStorage.getItem('webhopital_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('healthslot_users') || '[]');
     return users;
   }
 
@@ -214,13 +214,13 @@ class AdminModule {
    * Tạo tài khoản admin mặc định
    */
   createDefaultAdmin() {
-    const users = JSON.parse(localStorage.getItem('webhopital_users') || '[]');
+    const users = JSON.parse(localStorage.getItem('healthslot_users') || '[]');
     const adminExists = users.some(u => u.role === CONSTANTS.ROLES.ADMIN);
 
     if (!adminExists) {
       const adminUser = {
         id: Date.now(),
-        email: 'admin@webhopital.com',
+        email: 'admin@healthslot.com',
         password: 'admin123', // Trong thực tế nên hash
         name: 'Administrator',
         role: CONSTANTS.ROLES.ADMIN,
@@ -230,9 +230,9 @@ class AdminModule {
       };
 
       users.push(adminUser);
-      localStorage.setItem('webhopital_users', JSON.stringify(users));
+      localStorage.setItem('healthslot_users', JSON.stringify(users));
 
-      console.log('Default admin account created: admin@webhopital.com / admin123');
+      console.log('Default admin account created: admin@healthslot.com / admin123');
     }
   }
 
@@ -243,7 +243,7 @@ class AdminModule {
     if (!this.isAdmin()) return false;
 
     if (confirm('Bạn có chắc muốn reset toàn bộ hệ thống? Tất cả dữ liệu sẽ bị xóa!')) {
-      localStorage.removeItem('webhopital_users');
+      localStorage.removeItem('healthslot_users');
       localStorage.removeItem(CONSTANTS.STORAGE.APPOINTMENTS);
       localStorage.removeItem(CONSTANTS.STORAGE.DOCTORS);
       localStorage.removeItem(CONSTANTS.STORAGE.NOTIFICATIONS);

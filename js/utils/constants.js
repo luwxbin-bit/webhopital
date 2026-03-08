@@ -5,12 +5,12 @@
 const CONSTANTS = {
   // Storage keys
   STORAGE: {
-    USER: 'webhopital_user',
-    TOKEN: 'webhopital_token',
-    APPOINTMENTS: 'webhopital_appointments',
-    DOCTORS: 'webhopital_doctors',
-    NOTIFICATIONS: 'webhopital_notifications',
-    THEME: 'webhopital_theme'
+    USER: 'healthslot_user',
+    TOKEN: 'healthslot_token',
+    APPOINTMENTS: 'healthslot_appointments',
+    DOCTORS: 'healthslot_doctors',
+    NOTIFICATIONS: 'healthslot_notifications',
+    THEME: 'healthslot_theme'
   },
 
   // Roles

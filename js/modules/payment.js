@@ -288,7 +288,7 @@ class PaymentModule {
 
       // Send confirmation email
       const appointment = appointments[index];
-      const patient = JSON.parse(localStorage.getItem('webhopital_users') || '[]')
+      const patient = JSON.parse(localStorage.getItem('healthslot_users') || '[]')
         .find(u => u.id === appointment.patientId);
       const doctor = [...DEMO_DOCTORS, ...JSON.parse(localStorage.getItem(CONSTANTS.STORAGE.DOCTORS) || '[]')]
         .find(d => d.id === appointment.doctorId);

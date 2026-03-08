@@ -1,4 +1,4 @@
-# WebHopital - Medical Appointment Booking System
+# HealthSlot - Medical Appointment Booking System
 **Hệ thống Đặt Lịch Khám Bệnh Trực tuyến**
 
 A modern, static web application for booking medical appointments with complete user management system.
@@ -20,12 +20,12 @@ A modern, static web application for booking medical appointments with complete 
 
 ## 🚀 Live Demo
 
-**Visit**: https://luwxbin-bit.github.io/webhopital
+**Visit**: https://luwxbin-bit.github.io/healthslot
 
 ## 📁 Project Structure
 
 ```
-webhopital/
+healthslot/
 ├── index.html                          # Homepage with hero & featured doctors
 ├── css/
 │   └── style.css                      # Comprehensive responsive styling (~1000 lines)
@@ -170,9 +170,9 @@ Email: patient2@example.com | Password: password123
 ## 💾 Data Persistence
 
 All data is stored in browser localStorage:
-- **User accounts & sessions**: `webhopital_users`
-- **Appointments**: `webhopital_appointments`
-- **Notifications**: `webhopital_notifications`
+- **User accounts & sessions**: `healthslot_users`
+- **Appointments**: `healthslot_appointments`
+- **Notifications**: `healthslot_notifications`
 
 **Data persists across browser sessions** until localStorage is cleared.
 
@@ -207,7 +207,7 @@ All pages are fully responsive and mobile-friendly.
 ### Option 1: Local Testing
 ```bash
 # Clone repository
-git clone https://github.com/luwxbin-bit/webhopital.git
+git clone https://github.com/luwxbin-bit/healthslot.git
 
 # Open with Live Server (VS Code) or
 python -m http.server 8000
@@ -216,7 +216,7 @@ python -m http.server 8000
 ```
 
 ### Option 2: GitHub Pages (Already Configured)
-The site is ready at: https://luwxbin-bit.github.io/webhopital
+The site is ready at: https://luwxbin-bit.github.io/healthslot
 
 If Pages not enabled:
 1. Go to repository **Settings** → **Pages**
@@ -260,9 +260,9 @@ If Pages not enabled:
 
 ## 📞 Contact & Support
 
-- **Repository**: https://github.com/luwxbin-bit/webhopital
+- **Repository**: https://github.com/luwxbin-bit/healthslot
 - **Issues**: GitHub Issues page
-- **Author**: WebHopital Development Team
+- **Author**: HealthSlot Development Team
 
 ## 📄 License
 
@@ -316,7 +316,7 @@ npm start
 ## Cấu trúc Dự án
 
 ```
-webhopital/
+healthslot/
 ├── backend/
 │   ├── server.js          # Main server file
 │   ├── init-db.js         # Database initialization

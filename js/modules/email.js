@@ -6,7 +6,7 @@
 class EmailModule {
   constructor() {
     // EmailJS configuration
-    this.serviceId = 'service_webhopital'; // Replace with your EmailJS service ID
+    this.serviceId = 'service_healthslot'; // Replace with your EmailJS service ID
     this.templateIds = {
       appointmentConfirmation: 'template_appointment_confirm',
       appointmentReminder: 'template_appointment_reminder',
@@ -203,7 +203,7 @@ class EmailModule {
         to_email: email,
         subject: subject,
         message: message,
-        system_name: 'WebHopital'
+        system_name: 'HealthSlot'
       };
 
       // Using a generic template for system notifications
