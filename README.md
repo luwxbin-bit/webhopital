@@ -1,52 +1,44 @@
-# Hướng dẫn Thiết lập và Chạy Dự án Bệnh viện Quân Dân Y Miền Đông
+# WebHopital - Hệ thống Bệnh viện Trực tuyến
 
-## Tổng quan
+**Static Site Version** - Hospital Management System
 
-Dự án bao gồm:
-- **Backend**: Node.js + Express + SQLite
-- **Frontend**: HTML/CSS/JavaScript thuần
-- **Database**: SQLite với schema toàn diện
+## ✨ Tính năng
 
-## Yêu cầu hệ thống
+- 📋 Danh sách bác sĩ chuyên khoa
+- 🏥 Đặt lịch khám nhanh chóng  
+- 👤 Quản lý thông tin bệnh nhân
+- 💬 Chatbot hỗ trợ bệnh nhân
+- 📱 Giao diện responsive
 
-- Node.js >= 14.0.0
-- npm hoặc yarn
+## 🚀 Truy cập Trực tiếp
 
-## Cài đặt và Chạy
+Truy cập trang web: **[https://luwxbin-bit.github.io/webhopital](https://luwxbin-bit.github.io/webhopital)**
 
-### 1. Cài đặt Dependencies
+## 📖 Hướng dẫn Sử dụng
 
-```bash
-# Backend
-cd backend
-npm install
+### Đăng nhập / Đăng ký
+- Truy cập trang **Login** hoặc **Sign Up**
+- Nhập thông tin và đăng nhập
+- Dữ liệu được lưu trên thiết bị (localStorage)
 
-# Frontend không cần cài đặt gì thêm
-```
+### Đặt lịch khám
+1. Vào trang **Đặt lịch khám**
+2. Chọn bác sĩ, ngày, giờ mong muốn
+3. Nhập thông tin liên lạc
+4. Xác nhận - Lịch hẹn được lưu trên thiết bị
 
-### 2. Khởi tạo Cơ sở dữ liệu
+### Xem lịch hẹn
+- Vào **Lịch hẹn của tôi** để xem tất cả lịch khám
+- Dữ liệu được lưu cục bộ trên browser
 
-```bash
-cd backend
-npm run init-db
-```
+## 🛠️ Công nghệ
 
-Lệnh này sẽ:
-- Tạo database mới với schema toàn diện
-- Thêm dữ liệu mẫu (bác sĩ, bệnh nhân, lịch hẹn, v.v.)
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **Lưu trữ**: localStorage (Browser)
+- **Hosting**: GitHub Pages
+- **Icons**: Font Awesome
 
-### 3. Chạy Backend Server
-
-```bash
-cd backend
-npm start
-```
-
-Server sẽ chạy tại: http://localhost:3003
-
-### 4. Truy cập ứng dụng
-
-Mở trình duyệt và truy cập: http://localhost:3003
+## 📁 Cấu trúc Dự án
 
 ## Tài khoản Demo
 
