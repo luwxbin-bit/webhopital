@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Tài Khoản - WebHopital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            margin: 0 auto 20px;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .profile-role {
+            color: #00a8e8;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00a8e8;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        .profile-menu {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-menu-item {
+            padding: 12px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            color: #666;
+            text-decoration: none;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .profile-menu-item:hover,
+        .profile-menu-item.active {
+            background: #e3f2fd;
+            color: #00a8e8;
+            border-color: #00a8e8;
+        }
+
+        .profile-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00a8e8;
+            box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.1);
+        }
+
+        .form-group input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+            background-color: #f8f9fa;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #4caf50;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f44336;
+        }
+
+        .appointment-preview {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-menu {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-hospital"></i> WebHopital
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="/pages/doctors.html">Bác sĩ</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn btn-primary" data-auth-btn style="text-decoration: none; cursor: pointer; margin: 0;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section style="padding: 40px 20px;">
+        <div class="profile-container">
+            <!-- SIDEBAR -->
+            <aside class="profile-sidebar">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <div class="profile-name" id="profileName">-</div>
+                <div class="profile-role">Bệnh nhân</div>
+
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="statsAppointments">0</div>
+                        <div class="stat-label">Lịch hẹn</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="statsCompleted">0</div>
+                        <div class="stat-label">Đã khám</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="statsUpcoming">0</div>
+                        <div class="stat-label">Sắp tới</div>
+                    </div>
+                </div>
+
+                <div class="profile-menu">
+                    <button class="profile-menu-item active" onclick="switchSection('general')">
+                        <i class="fas fa-user-circle"></i> Thông Tin Chung
+                    </button>
+                    <button class="profile-menu-item" onclick="switchSection('security')">
+                        <i class="fas fa-lock"></i> Bảo Mật
+                    </button>
+                    <button class="profile-menu-item" onclick="switchSection('appointments')">
+                        <i class="fas fa-calendar"></i> Lịch Hẹn
+                    </button>
+                    <button class="profile-menu-item" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+                    </button>
+                </div>
+            </aside>
+
+            <!-- CONTENT -->
+            <div class="profile-content">
+                <!-- GENERAL SECTION -->
+                <div id="general" class="section active">
+                    <h2><i class="fas fa-user-circle"></i> Thông Tin Chung</h2>
+                    <div class="alert alert-success" id="successMsg"></div>
+                    <div class="alert alert-danger" id="errorMsg"></div>
+
+                    <form id="generalForm">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Họ và tên</label>
+                            <input type="text" id="fullName" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-envelope"></i> Email</label>
+                                <input type="email" id="email" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-phone"></i> Số điện thoại</label>
+                                <input type="tel" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Ngày sinh (tùy chọn)</label>
+                            <input type="date" id="dob">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Địa chỉ (tùy chọn)</label>
+                            <input type="text" id="address" placeholder="Nhập địa chỉ của bạn">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-file-alt"></i> Ghi chú y tế (tùy chọn)</label>
+                            <textarea id="notes" style="height: 100px;" placeholder="Ghi lại thông tin y tế quan trọng..."></textarea>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu Thay Đổi
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-redo"></i> Hủy
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SECURITY SECTION -->
+                <div id="security" class="section">
+                    <h2><i class="fas fa-lock"></i> Bảo Mật</h2>
+
+                    <form id="securityForm">
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Mật khẩu hiện tại</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Mật khẩu mới</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Xác nhận mật khẩu mới</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Thay Đổi Mật Khẩu
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr style="margin: 30px 0;">
+
+                    <h3><i class="fas fa-shield-alt"></i> Thiết Lập An Toàn</h3>
+                    <div style="margin-top: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" checked disabled>
+                            <span>Bật xác thực 2 yếu tố</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- APPOINTMENTS SECTION -->
+                <div id="appointments" class="section">
+                    <h2><i class="fas fa-calendar"></i> Lịch Hẹn Gần Đây</h2>
+
+                    <div id="upcomingList"></div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="/pages/my-appointments.html" class="btn btn-primary">
+                            <i class="fas fa-list"></i> Xem Toàn Bộ Lịch Hẹn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebHopital</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/app.js"></script>
+
+    <script>
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            currentUser = AuthModule.getCurrentUser();
+            if (!currentUser) {
+                alert('Vui lòng đăng nhập');
+                window.location.href = '/pages/login.html';
+                return;
+            }
+
+            // Load profile info
+            loadProfileInfo();
+            loadStats();
+            loadUpcomingAppointments();
+
+            // Form handlers
+            document.getElementById('generalForm').addEventListener('submit', handleGeneralSubmit);
+            document.getElementById('securityForm').addEventListener('submit', handleSecuritySubmit);
+        });
+
+        function loadProfileInfo() {
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('fullName').value = currentUser.name;
+            document.getElementById('email').value = currentUser.email;
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('dob').value = currentUser.dob || '';
+            document.getElementById('address').value = currentUser.address || '';
+            document.getElementById('notes').value = currentUser.medicalNotes || '';
+        }
+
+        function loadStats() {
+            const allAppointments = AppointmentModule.getUserAppointments();
+            const upcoming = AppointmentModule.getUpcoming();
+            const completed = allAppointments.filter(a => a.status === 'completed').length;
+
+            document.getElementById('statsAppointments').textContent = allAppointments.length;
+            document.getElementById('statsCompleted').textContent = completed;
+            document.getElementById('statsUpcoming').textContent = upcoming.length;
+        }
+
+        function loadUpcomingAppointments() {
+            const upcoming = AppointmentModule.getUpcoming().slice(0, 3);
+            const list = document.getElementById('upcomingList');
+            list.innerHTML = '';
+
+            if (upcoming.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #999; padding: 40px 0;">Không có lịch hẹn sắp tới</div>';
+                return;
+            }
+
+            upcoming.forEach(apt => {
+                const dateStr = new Date(apt.date).toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const card = document.createElement('div');
+                card.className = 'appointment-preview';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 15px;">
+                        <div>
+                            <strong>BS ${apt.doctorName}</strong><br>
+                            <small style="color: #00a8e8;">${apt.doctorSpecialty}</small><br>
+                            <small style="color: #666;">
+                                <i class="fas fa-calendar"></i> ${dateStr}<br>
+                                <i class="fas fa-clock"></i> ${apt.time}
+                            </small>
+                        </div>
+                        <span class="badge badge-${apt.status}">${apt.status === 'pending' ? 'Chờ xác nhận' : 'Đã xác nhận'}</span>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function switchSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update menu
+            document.querySelectorAll('.profile-menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.profile-menu-item').classList.add('active');
+        }
+
+        function handleGeneralSubmit(e) {
+            e.preventDefault();
+
+            const updates = {
+                name: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value,
+                address: document.getElementById('address').value,
+                medicalNotes: document.getElementById('notes').value
+            };
+
+            const result = AuthModule.updateProfile(updates);
+
+            if (result.success) {
+                currentUser = result.user;
+                showAlert('successMsg', '✅ Cập nhật thông tin thành công');
+                loadProfileInfo();
+                setTimeout(() => {
+                    document.getElementById('successMsg').classList.remove('show');
+                }, 3000);
+            } else {
+                showAlert('errorMsg', '❌ Cập nhật thất bại');
+            }
+        }
+
+        function handleSecuritySubmit(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Note: This is a demo - password validation should be on server
+            if (newPassword !== confirmPassword) {
+                showAlert('errorMsg', '❌ Mật khẩu xác nhận không khớp');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showAlert('errorMsg', '❌ Mật khẩu phải có ít nhất 6 ký tự');
+                return;
+            }
+
+            showAlert('successMsg', '✅ Thay đổi mật khẩu thành công');
+            document.getElementById('securityForm').reset();
+
+            setTimeout(() => {
+                document.getElementById('successMsg').classList.remove('show');
+            }, 3000);
+        }
+
+        function showAlert(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.classList.add('show');
+        }
+
+        function logout() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                AuthModule.logout();
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

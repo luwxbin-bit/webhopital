@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Hẹn Của Tôi - WebHopital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .appointments-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .appointments-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #00a8e8;
+            color: white;
+            border-color: #00a8e8;
+        }
+
+        .appointment-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .appointment-header {
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-doctor {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .appointment-specialty {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .appointment-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .appointment-body {
+            padding: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .appointment-notes {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+        }
+
+        .appointment-footer {
+            border-top: 1px solid #eee;
+            padding: 15px 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .appointment-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .appointment-btn-primary {
+            background: #00a8e8;
+            color: white;
+        }
+
+        .appointment-btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .appointment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .no-appointments {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-appointments i {
+            font-size: 60px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .no-appointments p {
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .appointment-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .info-row {
+                gap: 20px;
+            }
+
+            .appointment-footer {
+                flex-direction: column;
+            }
+
+            .appointment-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-hospital"></i> WebHopital
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="/pages/doctors.html">Bác sĩ</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn btn-primary" data-auth-btn style="text-decoration: none; cursor: pointer; margin: 0;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section style="padding: 40px 20px;">
+        <div class="appointments-container">
+            <h2 style="margin-bottom: 30px;"><i class="fas fa-calendar"></i> Lịch Hẹn Của Tôi</h2>
+
+            <div class="appointments-tabs">
+                <button class="tab-btn active" onclick="filterAppointments('upcoming')">
+                    <i class="fas fa-clock"></i> Sắp tới
+                </button>
+                <button class="tab-btn" onclick="filterAppointments('past')">
+                    <i class="fas fa-history"></i> Đã xong
+                </button>
+                <button class="tab-btn" onclick="filterAppointments('all')">
+                    <i class="fas fa-list"></i> Tất cả
+                </button>
+            </div>
+
+            <div id="appointmentsList"></div>
+            <div id="noAppointments" class="no-appointments" style="display: none;">
+                <i class="fas fa-calendar-times"></i>
+                <p>Bạn chưa có lịch hẹn nào.</p>
+                <a href="/pages/booking.html" class="btn btn-primary">
+                    <i class="fas fa-calendar-plus"></i> Đặt Lịch Ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebHopital</p>
+        </div>
+    </footer>
+
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/app.js"></script>
+
+    <script>
+        let currentFilter = 'upcoming';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!AuthModule.isLoggedIn()) {
+                alert('Vui lòng đăng nhập');
+                window.location.href = '/pages/login.html';
+                return;
+            }
+
+            filterAppointments('upcoming');
+        });
+
+        function filterAppointments(type) {
+            currentFilter = type;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let appointments = [];
+            if (type === 'upcoming') {
+                appointments = AppointmentModule.getUpcoming();
+            } else if (type === 'past') {
+                appointments = AppointmentModule.getPast();
+            } else {
+                appointments = AppointmentModule.getUserAppointments();
+            }
+
+            displayAppointments(appointments);
+        }
+
+        function displayAppointments(appointments) {
+            const appointmentsList = document.getElementById('appointmentsList');
+            const noAppointments = document.getElementById('noAppointments');
+
+            if (appointments.length === 0) {
+                appointmentsList.innerHTML = '';
+                noAppointments.style.display = 'block';
+                return;
+            }
+
+            noAppointments.style.display = 'none';
+            appointmentsList.innerHTML = '';
+
+            appointments.forEach(apt => {
+                const dateObj = new Date(`${apt.date}`);
+                const dateStr = dateObj.toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long'
+                });
+
+                const card = document.createElement('div');
+                card.className = 'appointment-item';
+                card.innerHTML = `
+                    <div class="appointment-header">
+                        <div class="appointment-info">
+                            <div class="appointment-doctor">BS ${apt.doctorName}</div>
+                            <div class="appointment-specialty">${apt.doctorSpecialty}</div>
+                        </div>
+                        <div class="appointment-status badge badge-${apt.status}">
+                            ${getStatusText(apt.status)}
+                        </div>
+                    </div>
+
+                    <div class="appointment-body">
+                        <div class="info-row">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-calendar"></i> Ngày khám</div>
+                                <div class="info-value">${dateStr}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-clock"></i> Giờ khám</div>
+                                <div class="info-value">${apt.time}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-hourglass-half"></i> Còn lại</div>
+                                <div class="info-value">${AppointmentModule.getTimeRemaining(apt.date, apt.time)}</div>
+                            </div>
+                        </div>
+
+                        ${apt.symptoms ? `
+                            <div class="appointment-notes">
+                                <strong><i class="fas fa-stethoscope"></i> Triệu chứng:</strong><br>${apt.symptoms}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="appointment-footer">
+                        <a href="booking.html?doctor=${apt.doctorId}" class="appointment-btn appointment-btn-primary">
+                            <i class="fas fa-sync"></i> Đổi lịch
+                        </a>
+                        <button class="appointment-btn appointment-btn-danger" onclick="cancelAppointment('${apt.id}')">
+                            <i class="fas fa-times"></i> Hủy lịch
+                        </button>
+                    </div>
+                `;
+
+                appointmentsList.appendChild(card);
+            });
+        }
+
+        function getStatusText(status) {
+            const statuses = {
+                'pending': 'Chờ xác nhận',
+                'confirmed': 'Đã xác nhận',
+                'completed': 'Đã hoàn thành',
+                'cancelled': 'Đã hủy'
+            };
+            return statuses[status] || status;
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('Bạn có chắc chắn muốn hủy lịch khám này?')) {
+                const result = AppointmentModule.cancel(appointmentId, 'Hủy do yêu cầu từ bệnh nhân');
+                if (result.success) {
+                    alert('✅ Hủy lịch thành công');
+                    filterAppointments(currentFilter);
+                } else {
+                    alert('❌ Lỗi: ' + result.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
