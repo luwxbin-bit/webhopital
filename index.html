@@ -1,159 +1,331 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BV Quân Dân Y Miền Đông</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebHopital - Nền tảng Đặt Lịch Khám Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="navbar">
-    <div class="navbar-container">
-      <a href="index.html" class="navbar-brand" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-        <i class="fas fa-hospital"></i>
-        <span>BV Quân Dân Y Miền Đông</span>
-      </a>
-      <nav class="nav-menu">
-        <a href="index.html" class="nav-link active">Trang chủ</a>
-        <a href="doctors.html" class="nav-link">Bác sĩ</a>
-        <a href="booking.html" class="nav-link">Đặt lịch</a>
-        <a href="login.html" class="nav-link">Đăng nhập</a>
-      </nav>
-    </div>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Chăm sóc sức khỏe cho quân và dân</h1>
-      <p>Cung cấp dịch vụ y tế chất lượng cao với đội ngũ bác sĩ giàu kinh nghiệm</p>
-      <a href="booking.html" class="btn btn-primary">Đặt lịch khám ngay</a>
-    </div>
-  </section>
-
-   <!-- Statistics / Counters -->
-    <section class="stats-section">
-      <div class="stats-grid container">
-        <div class="stat-card" role="group" aria-label="Nhân viên">
-          <div class="stat-icon" aria-hidden="true"><i class="fas fa-user-nurse"></i></div>
-          <div>
-            <div class="stat-number" role="status" aria-live="polite" data-target="600" data-suffix="+">0</div>
-            <div class="stat-label">Nhân viên</div>
-          </div>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">
+                <i class="fas fa-hospital"></i> WebHopital
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="#doctors">Bác sĩ</a></li>
+                <li><a href="#features">Tính năng</a></li>
+                <li><a href="#about">Về chúng tôi</a></li>
+            </ul>
+            <div class="navbar-right">
+                <button class="btn btn-primary" data-auth-btn style="text-decoration: none; cursor: pointer; margin: 0;">
+                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                </button>
+            </div>
         </div>
+    </nav>
 
-        <div class="stat-card" role="group" aria-label="Năm kinh nghiệm">
-          <div class="stat-icon" aria-hidden="true"><i class="fas fa-medal"></i></div>
-          <div>
-            <div class="stat-number" role="status" aria-live="polite" data-target="15" data-suffix="+">0</div>
-            <div class="stat-label">Năm kinh nghiệm</div>
-          </div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1><i class="fas fa-heartbeat"></i> Đặt Lịch Khám Trực Tuyến Dễ Dàng</h1>
+            <p>Kết nối với các bác sĩ giỏi, đặt lịch khám chỉ trong vài phút, nhận chăm sóc y tế tốt nhất</p>
         </div>
-
-        <div class="stat-card" role="group" aria-label="Khách hàng mỗi năm">
-          <div class="stat-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
-          <div>
-            <div class="stat-number" role="status" aria-live="polite" data-target="1400000" data-suffix="+">0</div>
-            <div class="stat-label">Khách hàng mỗi năm</div>
-          </div>
-        </div>
-
-        <div class="stat-card" role="group" aria-label="Bác sĩ toàn thời gian">
-          <div class="stat-icon" aria-hidden="true"><i class="fas fa-user-doctor"></i></div>
-          <div>
-            <div class="stat-number" role="status" aria-live="polite" data-target="100" data-suffix="+">0</div>
-            <div class="stat-label">Bác sĩ toàn thời gian</div>
-          </div>
-        </div>
-      </div>
     </section>
 
-  <div class="container">
-    <section class="features">
-      <h2 class="section-title">Dịch vụ của chúng tôi</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-user-md"></i>
-          <h3>Bác sĩ giàu kinh nghiệm</h3>
-          <p>Đội ngũ bác sĩ chuyên môn cao với hơn 20 năm kinh nghiệm</p>
+    <!-- SEARCH SECTION -->
+    <div class="container mt-4">
+        <div class="search-box">
+            <input type="text" class="form-control" id="searchInput" placeholder="Tìm bác sĩ hoặc chuyên khoa...">
+            <select class="form-control" id="specialtyFilter" style="max-width: 200px;">
+                <option value="">Tất cả chuyên khoa</option>
+            </select>
+            <button class="btn btn-primary" onclick="filterDoctors()">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
         </div>
-        <div class="feature-card">
-          <i class="fas fa-heartbeat"></i>
-          <h3>Chăm sóc 24/7</h3>
-          <p>Hỗ trợ và chăm sóc bệnh nhân 24 giờ mỗi ngày</p>
+    </div>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="bg-light">
+        <div class="container">
+            <h2>Tại sao chọn WebHopital?</h2>
+            <div class="row">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-clock" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>Đặt Lịch Nhanh</h3>
+                        <p>Chỉ cần 30 giây để đặt lịch khám với bác sĩ yêu thích của bạn</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-doctor" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>Bác Sĩ Giỏi</h3>
+                        <p>Đội ngũ bác sĩ giàu kinh nghiệm, chuyên môn cao từ các bệnh viện hàng đầu</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>An Toàn & Bảo Mật</h3>
+                        <p>Thông tin cá nhân của bạn được bảo vệ tuyệt đối theo tiêu chuẩn quốc tế</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-mobile-alt" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>Dễ Sử Dụng</h3>
+                        <p>Giao diện thân thiện, hoạt động mượt mà trên mọi thiết bị</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bell" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>Nhắc Lịch Tự Động</h3>
+                        <p>Nhận thông báo nhắc lịch khám 1 ngày trước và 2 giờ trước</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-headset" style="font-size: 40px; color: #00a8e8; margin-bottom: 15px;"></i>
+                        <h3>Hỗ Trợ 24/7</h3>
+                        <p>Đội hỗ trợ khách hàng sẵn sàng giúp đỡ bạn bất kỳ lúc nào</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="feature-card">
-          <i class="fas fa-clinic-medical"></i>
-          <h3>Thiết bị hiện đại</h3>
-          <p>Máy móc y tế công nghệ cao nhất hiện nay</p>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-check-circle"></i>
-          <h3>Tỷ lệ thành công cao</h3>
-          <p>95% bệnh nhân hài lòng với dịch vụ của chúng tôi</p>
-        </div>
-      </div>
     </section>
 
-    <section class="about">
-      <div class="about-content">
-        <h2 class="section-title">Về Bệnh viện Quân Dân Y Miền Đông</h2>
-        <p>Bệnh viện Quân Dân Y Miền Đông là một trong những cơ sở y tế hàng đầu tại TP.HCM, cung cấp các dịch vụ khám chữa bệnh toàn diện với trang thiết bị hiện đại và đội ngũ bác sĩ chuyên gia.</p>
-        <ul class="about-list">
-          <li><i class="fas fa-check"></i> Khám tổng quát</li>
-          <li><i class="fas fa-check"></i> Khám chuyên khoa</li>
-          <li><i class="fas fa-check"></i> Xét nghiệm và chẩn đoán</li>
-          <li><i class="fas fa-check"></i> Phẫu thuật</li>
-        </ul>
-      </div>
-      <div class="about-image">
-        <i class="fas fa-hospital" style="font-size: 120px; color: #0066cc;"></i>
-      </div>
+    <!-- DOCTORS SECTION -->
+    <section id="doctors">
+        <div class="container">
+            <h2>Bác Sĩ Nổi Bật</h2>
+            <div class="row" id="doctorsList">
+                <!-- Bác sĩ sẽ được thêm vào đây -->
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="pages/doctors.html" class="btn btn-lg btn-primary">
+                    <i class="fas fa-stethoscope"></i> Xem Tất Cả Bác Sĩ
+                </a>
+            </div>
+        </div>
     </section>
-  </div>
 
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-column footer-info">
-        <h3>Thông tin liên lạc</h3>
-        <p><strong>Bệnh viện Quân Dân Y Miền Đông</strong></p>
-        <p class="footer-address">Địa chỉ trụ sở chính: 50 Lê Văn Việt, TP Thủ Đức, TP.HCM</p>
-        <p><i class="fas fa-phone"></i> <strong>Cấp cứu:</strong> (028) 7777 7777 - 0332 363 655</p>
-        <p><i class="fas fa-phone"></i> <strong>Hotline:</strong> 082 884 5959</p>
-        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> info@bvquandany.com</p>
-      </div>
-      
-      <div class="footer-column footer-nav">
-        <div class="footer-nav-col">
-          <h4>Trang chủ</h4>
-          <ul>
-            <li><a href="index.html">Chuyên khoa</a></li>
-            <li><a href="booking.html">Dịch vụ</a></li>
-            <li><a href="#">Liên hệ</a></li>
-          </ul>
-        </div>
-        <div class="footer-nav-col">
-          <h4>Giới thiệu</h4>
-          <ul>
-            <li><a href="#">Dành cho đối tác</a></li>
-            <li><a href="#">Tin tức & Sự kiện</a></li>
-            <li><a href="#">Tuyển dụng</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p>&copy; 2024 by BV Quân Dân Y Miền Đông. <a href="#" style="color: #0052a3; text-decoration: none;">Privacy Policy</a></p>
-    </div>
-  </footer>
+    <!-- ABOUT SECTION -->
+    <section id="about" style="background: #f5f5f5;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;">
+                <div>
+                    <h2>Về WebHopital</h2>
+                    <p>WebHopital là nền tảng đặt lịch khám trực tuyến hàng đầu tại Việt Nam, nối kết bệnh nhân với các bác sĩ giỏi từ các bệnh viện uy tín.</p>
+                    <p><strong>Sứ mệnh của chúng tôi:</strong> Giúp mỗi người dân có quyền tiếp cận dịch vụ chăm sóc sức khỏe chất lượng cao, dễ dàng và giá cả phải chăng.</p>
+                    
+                    <div style="margin-top: 30px;">
+                        <div style="display: flex; gap: 30px; margin-bottom: 20px;">
+                            <div>
+                                <h3 style="color: #00a8e8; font-size: 32px; margin-bottom: 5px;">50K+</h3>
+                                <p>Bệnh nhân đã sử dụng</p>
+                            </div>
+                            <div>
+                                <h3 style="color: #00a8e8; font-size: 32px; margin-bottom: 5px;">500+</h3>
+                                <p>Bác sĩ tham gia</p>
+                            </div>
+                            <div>
+                                <h3 style="color: #00a8e8; font-size: 32px; margin-bottom: 5px;">100K+</h3>
+                                <p>Lịch khám thành công</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-  <script src="auth.js"></script>
-  <script>
-    // Cập nhật navbar khi trang load
-    document.addEventListener('DOMContentLoaded', updateNavbarAuth);
-  </script>
-  <script src="stats.js"></script>
-  <script src="chatbot.js"></script>
+                <div style="text-align: center;">
+                    <div style="width: 300px; height: 300px; background: linear-gradient(135deg, #00a8e8, #00c9ff); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 120px; margin: 0 auto;">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section style="background: linear-gradient(135deg, #00a8e8, #00c9ff); color: white; text-align: center;">
+        <div class="container">
+            <h2 style="color: white; margin-bottom: 20px;">Sẵn Sàng Chăm Sóc Sức Khỏe?</h2>
+            <p style="font-size: 18px; margin-bottom: 30px;">Đặt lịch khám với bác sĩ giỏi ngay hôm nay</p>
+            <a href="pages/booking.html" class="btn btn-lg" style="background: white; color: #00a8e8;">
+                <i class="fas fa-calendar-check"></i> Đặt Lịch Ngay
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4><i class="fas fa-hospital"></i> WebHopital</h4>
+                <p>Đặt lịch khám trực tuyến dễ dàng, an toàn và tiện lợi</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Liên Kết Nhanh</h4>
+                <ul>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="pages/doctors.html">Bác sĩ</a></li>
+                    <li><a href="pages/profile.html">Tài khoản</a></li>
+                    <li><a href="pages/my-appointments.html">Lịch hẹn</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Hỗ Trợ</h4>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Liên Hệ</h4>
+                <p>
+                    <i class="fas fa-phone"></i> 1900-8686<br>
+                    <i class="fas fa-envelope"></i> support@webhopital.com<br>
+                    <i class="fas fa-map-marker-alt"></i> Hồ Chí Minh, Việt Nam
+                </p>
+                <div style="margin-top: 15px; display: flex; gap: 15px;">
+                    <a href="#" style="font-size: 20px;"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="font-size: 20px;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="font-size: 20px;"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 WebHopital. Tất cả quyền được bảo lưu. | Phát triển với <i class="fas fa-heart" style="color: #ff4081;"></i> bởi WebHopital Team</p>
+        </div>
+    </footer>
+
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/modules/auth.js"></script>
+    <script src="js/modules/doctors.js"></script>
+    <script src="js/modules/appointments.js"></script>
+    <script src="js/modules/notifications.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate specialties dropdown
+            const specialtyFilter = document.getElementById('specialtyFilter');
+            DoctorModule.getSpecialties().forEach(specialty => {
+                const option = document.createElement('option');
+                option.value = specialty;
+                option.textContent = specialty;
+                specialtyFilter.appendChild(option);
+            });
+
+            // Load featured doctors
+            loadFeaturedDoctors();
+
+            // Update auth button
+            updateAuthButton();
+        });
+
+        function loadFeaturedDoctors() {
+            const featured = DoctorModule.getFeatured();
+            const doctorsList = document.getElementById('doctorsList');
+            doctorsList.innerHTML = '';
+
+            featured.forEach(doctor => {
+                const card = document.createElement('div');
+                card.className = 'doctor-card';
+                card.innerHTML = `
+                    <div class="doctor-card-image">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="doctor-card-body">
+                        <div class="doctor-card-name">${doctor.name}</div>
+                        <div class="doctor-card-specialty">${doctor.specialty}</div>
+                        <div class="doctor-card-info">
+                            <i class="fas fa-building"></i> ${doctor.hospital}
+                        </div>
+                        <div class="doctor-card-info">
+                            <i class="fas fa-briefcase"></i> ${doctor.experience} kinh nghiệm
+                        </div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i> ${doctor.rating}/5
+                        </div>
+                        <div class="doctor-card-actions">
+                            <a href="pages/booking.html?doctor=${doctor.id}" class="btn btn-primary">
+                                <i class="fas fa-calendar"></i> Đặt lịch
+                            </a>
+                            <a href="pages/doctor-detail.html?id=${doctor.id}" class="btn btn-outline">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                            </a>
+                        </div>
+                    </div>
+                `;
+                doctorsList.appendChild(card);
+            });
+        }
+
+        function filterDoctors() {
+            const query = document.getElementById('searchInput').value;
+            const specialty = document.getElementById('specialtyFilter').value;
+
+            let results = DoctorModule.getAll();
+
+            if (query) {
+                results = results.filter(d => 
+                    d.name.toLowerCase().includes(query.toLowerCase()) ||
+                    d.specialty.toLowerCase().includes(query.toLowerCase())
+                );
+            }
+
+            if (specialty) {
+                results = results.filter(d => d.specialty === specialty);
+            }
+
+            console.log('Found doctors:', results);
+            // Redirect to doctors page with filter
+            window.location.href = `pages/doctors.html?search=${encodeURIComponent(query)}&specialty=${encodeURIComponent(specialty)}`;
+        }
+
+        function updateAuthButton() {
+            const user = AuthModule.getCurrentUser();
+            const authBtn = document.querySelector('[data-auth-btn]');
+            
+            if (user) {
+                authBtn.innerHTML = `<i class="fas fa-user"></i> ${user.name}`;
+                authBtn.onclick = () => window.location.href = '/pages/profile.html';
+            } else {
+                authBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Đăng nhập`;
+                authBtn.onclick = () => window.location.href = '/pages/login.html';
+            }
+        }
+
+        // Search on Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                filterDoctors();
+            }
+        });
+
+        // Bg-light style
+        document.querySelectorAll('.bg-light').forEach(el => {
+            el.style.background = '#f5f5f5';
+        });
+    </script>
 </body>
 </html>

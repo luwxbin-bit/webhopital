@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - WebHopital</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .signup-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            padding: 20px;
+        }
+
+        .signup-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .signup-header h1 {
+            font-size: 28px;
+            margin: 0 0 10px;
+            color: #1a1a1a;
+        }
+
+        .signup-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00a8e8;
+            box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.1);
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .requirement {
+            margin: 4px 0;
+        }
+
+        .requirement.met {
+            color: #4caf50;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00a8e8, #00c9ff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #00a8e8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #0095c9;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f44336;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #4caf50;
+        }
+
+        .terms {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .terms a {
+            color: #00a8e8;
+            text-decoration: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <h1><i class="fas fa-hospital"></i> WebHopital</h1>
+                <p>Tạo tài khoản mới</p>
+            </div>
+
+            <form class="signup-form" id="signupForm">
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Họ và tên</label>
+                    <input type="text" id="name" placeholder="Nhập họ tên của bạn" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone"></i> Số điện thoại (tùy chọn)</label>
+                    <input type="tel" id="phone" placeholder="Nhập số điện thoại">
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" required>
+                    <div class="password-requirements">
+                        <div class="requirement" id="req-length">
+                            <i class="fas fa-check-circle"></i> Ít nhất 6 ký tự
+                        </div>
+                        <div class="requirement" id="req-number">
+                            <i class="fas fa-check-circle"></i> Chứa ít nhất 1 số
+                        </div>
+                        <div class="requirement" id="req-upper">
+                            <i class="fas fa-check-circle"></i> Chứa ít nhất 1 chữ hoa
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-lock"></i> Xác nhận mật khẩu</label>
+                    <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+                </div>
+
+                <div class="terms">
+                    <label style="margin: 0;">
+                        <input type="checkbox" id="agreeTerms" required>
+                        Tôi đồng ý với <a href="#" onclick="alert('Điều khoản dịch vụ')">Điều khoản dịch vụ</a> 
+                        và <a href="#" onclick="alert('Chính sách bảo mật')">Chính sách bảo mật</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="signup-btn">
+                    <div class="btn-text">
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                        <span id="btnText">Đăng ký</span>
+                    </div>
+                </button>
+            </form>
+
+            <div class="login-link">
+                Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const agreeTermsCheckbox = document.getElementById('agreeTerms');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const btnText = document.getElementById('btnText');
+        const passwordRequirements = document.querySelector('.password-requirements');
+
+        // Password validation
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            passwordRequirements.style.display = password ? 'block' : 'none';
+
+            const reqLength = document.getElementById('req-length');
+            const reqNumber = document.getElementById('req-number');
+            const reqUpper = document.getElementById('req-upper');
+
+            updateRequirement(reqLength, password.length >= 6);
+            updateRequirement(reqNumber, /\d/.test(password));
+            updateRequirement(reqUpper, /[A-Z]/.test(password));
+        });
+
+        function updateRequirement(element, isMet) {
+            if (isMet) {
+                element.classList.add('met');
+            } else {
+                element.classList.remove('met');
+            }
+        }
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Validation
+            if (!name || !email || !password || !confirmPassword) {
+                showError('Vui lòng điền đầy đủ thông tin bắt buộc');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Mật khẩu phải có ít nhất 6 ký tự');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Mật khẩu xác nhận không khớp');
+                return;
+            }
+
+            if (!agreeTermsCheckbox.checked) {
+                showError('Vui lòng đồng ý với điều khoản dịch vụ');
+                return;
+            }
+
+            // Show loading
+            loadingSpinner.style.display = 'block';
+            signupForm.querySelector('button').disabled = true;
+            btnText.textContent = 'Đang tạo tài khoản...';
+
+            const result = await AuthModule.signup(name, email, password, phone);
+
+            loadingSpinner.style.display = 'none';
+            signupForm.querySelector('button').disabled = false;
+            btnText.textContent = 'Đăng ký';
+
+            if (result.success) {
+                showSuccess('✅ Đăng ký thành công! Đang chuyển hướng...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } else {
+                showError(result.message);
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            errorMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
