@@ -208,6 +208,78 @@ const App = {
       month: 'long',
       day: 'numeric'
     });
+  },
+
+  /**
+   * Animation Utilities
+   */
+  animate: {
+    /**
+     * Animate element khi xuất hiện
+     */
+    fadeIn(element, delay = 0) {
+      if (!element) return;
+      
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(20px)';
+      element.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      
+      setTimeout(() => {
+        element.style.opacity = '1';
+        element.style.transform = 'translateY(0)';
+      }, delay);
+    },
+
+    /**
+     * Animate multiple elements với stagger
+     */
+    staggerFadeIn(elements, baseDelay = 0, staggerDelay = 100) {
+      elements.forEach((element, index) => {
+        this.fadeIn(element, baseDelay + (index * staggerDelay));
+      });
+    },
+
+    /**
+     * Animate counter numbers
+     */
+    animateCounter(element, target, duration = 2000) {
+      if (!element) return;
+      
+      const start = 0;
+      const startTime = performance.now();
+      
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(start + (target * easeOutQuart));
+        
+        element.textContent = current.toLocaleString();
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      
+      requestAnimationFrame(animate);
+    },
+
+    /**
+     * Smooth scroll to element
+     */
+    scrollTo(element, offset = 0) {
+      if (!element) return;
+      
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   }
 };
 

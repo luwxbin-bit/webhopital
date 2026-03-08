@@ -118,5 +118,98 @@ const DoctorModule = {
     }
 
     return dates;
+  },
+
+  /**
+   * Render danh sách bác sĩ với animation
+   */
+  renderDoctors(doctors, containerId, options = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const { 
+      showBookingButton = true, 
+      maxItems = null,
+      animate = true 
+    } = options;
+
+    // Giới hạn số lượng nếu cần
+    const displayDoctors = maxItems ? doctors.slice(0, maxItems) : doctors;
+
+    // Clear container
+    container.innerHTML = '';
+
+    // Render từng bác sĩ với animation
+    displayDoctors.forEach((doctor, index) => {
+      const doctorCard = this.createDoctorCard(doctor, showBookingButton);
+      
+      if (animate) {
+        doctorCard.style.opacity = '0';
+        doctorCard.style.transform = 'translateY(30px)';
+        doctorCard.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      }
+      
+      container.appendChild(doctorCard);
+
+      // Animate card xuất hiện
+      if (animate) {
+        setTimeout(() => {
+          doctorCard.style.opacity = '1';
+          doctorCard.style.transform = 'translateY(0)';
+        }, index * 150);
+      }
+    });
+  },
+
+  /**
+   * Tạo card bác sĩ
+   */
+  createDoctorCard(doctor, showBookingButton = true) {
+    const card = document.createElement('div');
+    card.className = 'doctor-card hover-lift';
+    card.setAttribute('data-doctor-id', doctor.id);
+
+    card.innerHTML = `
+      <div class="doctor-avatar">
+        <i class="fas fa-user-md animate-pulse"></i>
+      </div>
+      <h3>${doctor.name}</h3>
+      <p class="specialty"><i class="fas fa-stethoscope"></i> ${doctor.specialty}</p>
+      <p class="hospital"><i class="fas fa-hospital"></i> ${doctor.hospital}</p>
+      <div class="doctor-rating">
+        <i class="fas fa-star"></i>
+        <span>${doctor.rating || 4.5}</span>
+        <span class="rating-count">(${doctor.reviewCount || 0} đánh giá)</span>
+      </div>
+      ${showBookingButton ? `
+        <button class="btn btn-primary book-doctor-btn hover-scale" data-doctor-id="${doctor.id}">
+          <i class="fas fa-calendar-check"></i> Đặt lịch khám
+        </button>
+      ` : ''}
+    `;
+
+    // Thêm event listener cho nút đặt lịch
+    if (showBookingButton) {
+      const bookBtn = card.querySelector('.book-doctor-btn');
+      bookBtn.addEventListener('click', () => {
+        this.bookDoctor(doctor.id);
+      });
+    }
+
+    return card;
+  },
+
+  /**
+   * Đặt lịch với bác sĩ
+   */
+  bookDoctor(doctorId) {
+    const doctor = this.getById(doctorId);
+    if (!doctor) return;
+
+    // Lưu thông tin bác sĩ đã chọn
+    sessionStorage.setItem('selectedDoctor', JSON.stringify(doctor));
+    
+    // Chuyển đến trang đặt lịch
+    window.location.href = 'pages/booking.html';
   }
 };
