@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bác sĩ - WebHopital</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>WebHopital</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="my-appointments.html" class="nav-link">Lịch hẹn</a>
+                <div class="nav-user" id="userSection">
+                    <button id="loginBtn" class="btn btn-sm btn-outline">Đăng nhập</button>
+                    <button id="signupBtn" class="btn btn-sm btn-primary">Đăng ký</button>
+                </div>
+                <div class="nav-user logged-in" id="userLoggedIn" style="display: none;">
+                    <span id="userName"></span>
+                    <div class="user-dropdown">
+                        <button class="user-menu-btn">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="user-dropdown-content">
+                            <a href="profile.html"><i class="fas fa-user"></i> Hồ sơ</a>
+                            <a href="my-appointments.html"><i class="fas fa-calendar"></i> Lịch hẹn</a>
+                            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Doctor Profile Header -->
+        <div class="doctor-profile-header">
+            <div class="doctor-avatar">
+                <img id="doctorAvatar" src="../images/avatar-placeholder.png" alt="Doctor Avatar">
+            </div>
+            <div class="doctor-info">
+                <h1 id="doctorName">Đang tải...</h1>
+                <p class="doctor-specialty" id="doctorSpecialty"></p>
+                <div class="doctor-rating">
+                    <div class="stars" id="doctorStars"></div>
+                    <span id="doctorRating">0.0</span>
+                    <span class="rating-count">(0 đánh giá)</span>
+                </div>
+                <div class="doctor-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hospital"></i>
+                        <span id="doctorHospital"></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="doctorExperience"></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="doctorLocation">TP.HCM</span>
+                    </div>
+                </div>
+                <div class="doctor-actions">
+                    <button id="bookAppointmentBtn" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calendar-plus"></i> Đặt lịch khám
+                    </button>
+                    <button id="callBtn" class="btn btn-outline btn-lg">
+                        <i class="fas fa-phone"></i> Gọi điện
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Details Tabs -->
+        <div class="doctor-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="overview">Tổng quan</button>
+                <button class="tab-btn" data-tab="schedule">Lịch làm việc</button>
+                <button class="tab-btn" data-tab="reviews">Đánh giá</button>
+                <button class="tab-btn" data-tab="education">Học vấn</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="tab-pane active">
+                    <div class="overview-section">
+                        <h3>Giới thiệu</h3>
+                        <p id="doctorBio">Đang tải thông tin...</p>
+
+                        <h3>Chuyên khoa</h3>
+                        <div class="specialties-list" id="doctorSpecialties">
+                            <!-- Specialties will be loaded here -->
+                        </div>
+
+                        <h3>Kinh nghiệm làm việc</h3>
+                        <div class="experience-timeline" id="doctorExperienceTimeline">
+                            <!-- Experience will be loaded here -->
+                        </div>
+
+                        <h3>Giấy phép và chứng chỉ</h3>
+                        <div class="certificates-list" id="doctorCertificates">
+                            <!-- Certificates will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Tab -->
+                <div id="scheduleTab" class="tab-pane">
+                    <div class="schedule-section">
+                        <h3>Lịch làm việc</h3>
+                        <div class="schedule-calendar">
+                            <div class="calendar-header">
+                                <button id="prevWeek" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h4 id="currentWeek">Tuần này</h4>
+                                <button id="nextWeek" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="calendar-grid" id="scheduleGrid">
+                                <!-- Schedule will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div class="booking-info">
+                            <h4>Thông tin đặt lịch</h4>
+                            <ul>
+                                <li><i class="fas fa-check-circle text-success"></i> Đặt lịch online 24/7</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Xác nhận ngay lập tức</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Nhắc lịch trước 24h</li>
+                                <li><i class="fas fa-check-circle text-success"></i> Hủy lịch miễn phí trước 2h</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div id="reviewsTab" class="tab-pane">
+                    <div class="reviews-section">
+                        <div class="reviews-header">
+                            <h3>Đánh giá từ bệnh nhân</h3>
+                            <div class="rating-summary">
+                                <div class="overall-rating">
+                                    <div class="stars" id="overallStars"></div>
+                                    <span id="overallRating">0.0</span>
+                                    <span class="total-reviews" id="totalReviews">(0 đánh giá)</span>
+                                </div>
+                                <div class="rating-breakdown" id="ratingBreakdown">
+                                    <!-- Rating breakdown will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reviews-list" id="reviewsList">
+                            <!-- Reviews will be loaded here -->
+                        </div>
+
+                        <div class="write-review" id="writeReviewSection">
+                            <h4>Viết đánh giá</h4>
+                            <form id="reviewForm">
+                                <div class="rating-input">
+                                    <label>Đánh giá của bạn:</label>
+                                    <div class="stars-input" id="reviewStars">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewTitle">Tiêu đề đánh giá</label>
+                                    <input type="text" id="reviewTitle" placeholder="Tóm tắt trải nghiệm của bạn" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewContent">Nội dung đánh giá</label>
+                                    <textarea id="reviewContent" rows="4" placeholder="Hãy chia sẻ trải nghiệm khám chữa bệnh của bạn..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Tab -->
+                <div id="educationTab" class="tab-pane">
+                    <div class="education-section">
+                        <h3>Học vấn và đào tạo</h3>
+                        <div class="education-timeline" id="educationTimeline">
+                            <!-- Education will be loaded here -->
+                        </div>
+
+                        <h3>Chứng chỉ chuyên môn</h3>
+                        <div class="certificates-grid" id="certificatesGrid">
+                            <!-- Certificates will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Doctors -->
+        <div class="related-doctors">
+            <h3>Bác sĩ cùng chuyên khoa</h3>
+            <div class="doctors-grid" id="relatedDoctors">
+                <!-- Related doctors will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>WebHopital</h4>
+                <p>Hệ thống đặt lịch khám bệnh trực tuyến hàng đầu Việt Nam</p>
+            </div>
+            <div class="footer-section">
+                <h4>Liên hệ</h4>
+                <p><i class="fas fa-phone"></i> 1900-xxxx</p>
+                <p><i class="fas fa-envelope"></i> info@webhopital.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>Theo dõi chúng tôi</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 WebHopital. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="doctor-detail.js"></script>
+</body>
+</html>

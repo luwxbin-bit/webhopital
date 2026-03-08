@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả thanh toán - WebHopital</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>WebHopital</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">Trang chủ</a>
+                <a href="my-appointments.html" class="nav-link">Lịch hẹn</a>
+                <div class="nav-user" id="userSection">
+                    <button id="loginBtn" class="btn btn-sm btn-outline">Đăng nhập</button>
+                </div>
+                <div class="nav-user logged-in" id="userLoggedIn" style="display: none;">
+                    <span id="userName"></span>
+                    <div class="user-dropdown">
+                        <button class="user-menu-btn">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="user-dropdown-content">
+                            <a href="profile.html"><i class="fas fa-user"></i> Hồ sơ</a>
+                            <a href="my-appointments.html"><i class="fas fa-calendar"></i> Lịch hẹn</a>
+                            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="payment-result">
+            <div class="result-card" id="resultCard">
+                <!-- Result content will be loaded here -->
+            </div>
+
+            <div class="result-actions">
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Về trang chủ
+                </a>
+                <a href="my-appointments.html" class="btn btn-outline">
+                    <i class="fas fa-calendar"></i> Xem lịch hẹn
+                </a>
+                <button id="printReceipt" class="btn btn-outline">
+                    <i class="fas fa-print"></i> In hóa đơn
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/modules/email.js"></script>
+    <script src="../js/modules/payment.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        // Payment result handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const result = PaymentModule.processPaymentResult(urlParams);
+
+            displayPaymentResult(result);
+            updateUserInterface();
+
+            // Auto redirect after 5 seconds on success
+            if (result.success) {
+                setTimeout(() => {
+                    window.location.href = 'my-appointments.html';
+                }, 5000);
+            }
+        });
+
+        function displayPaymentResult(result) {
+            const resultCard = document.getElementById('resultCard');
+
+            if (result.success) {
+                resultCard.innerHTML = `
+                    <div class="result-success">
+                        <div class="result-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2>Thanh toán thành công!</h2>
+                        <div class="result-details">
+                            <div class="detail-row">
+                                <span>Mã giao dịch:</span>
+                                <strong>${result.transactionId}</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Số tiền:</span>
+                                <strong>${formatCurrency(result.amount)} VND</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>ID lịch hẹn:</span>
+                                <strong>${result.appointmentId}</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Thời gian:</span>
+                                <strong>${new Date().toLocaleString('vi-VN')}</strong>
+                            </div>
+                        </div>
+                        <p class="result-message">${result.message}</p>
+                        <p class="auto-redirect">Bạn sẽ được chuyển hướng về trang lịch hẹn trong 5 giây...</p>
+                    </div>
+                `;
+                resultCard.className = 'result-card success';
+            } else {
+                resultCard.innerHTML = `
+                    <div class="result-failure">
+                        <div class="result-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h2>Thanh toán thất bại!</h2>
+                        <div class="result-details">
+                            <div class="detail-row">
+                                <span>Lỗi:</span>
+                                <strong>${result.error || 'Không xác định'}</strong>
+                            </div>
+                            ${result.transactionId ? `
+                                <div class="detail-row">
+                                    <span>Mã giao dịch:</span>
+                                    <strong>${result.transactionId}</strong>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <p class="result-message">${result.message}</p>
+                        <div class="error-actions">
+                            <button onclick="retryPayment()" class="btn btn-primary">
+                                <i class="fas fa-redo"></i> Thử lại
+                            </button>
+                            <a href="my-appointments.html" class="btn btn-outline">
+                                <i class="fas fa-calendar"></i> Xem lịch hẹn
+                            </a>
+                        </div>
+                    </div>
+                `;
+                resultCard.className = 'result-card failure';
+            }
+        }
+
+        function retryPayment() {
+            // Get appointment ID from failed payment
+            const urlParams = new URLSearchParams(window.location.search);
+            const appointmentId = urlParams.get('appointmentId');
+
+            if (appointmentId) {
+                window.location.href = `booking.html?appointment=${appointmentId}&retry=1`;
+            } else {
+                window.location.href = 'my-appointments.html';
+            }
+        }
+
+        document.getElementById('printReceipt').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Login/Logout handlers
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            AuthModule.logout();
+            location.reload();
+        });
+
+        function updateUserInterface() {
+            const user = AuthModule.getCurrentUser();
+            const userSection = document.getElementById('userSection');
+            const userLoggedIn = document.getElementById('userLoggedIn');
+
+            if (user) {
+                userSection.style.display = 'none';
+                userLoggedIn.style.display = 'flex';
+                document.getElementById('userName').textContent = user.name;
+            } else {
+                userSection.style.display = 'flex';
+                userLoggedIn.style.display = 'none';
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+    </script>
+
+    <style>
+        .payment-result {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .result-card.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .result-card.failure {
+            border-left: 4px solid #dc3545;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-success .result-icon {
+            color: #28a745;
+        }
+
+        .result-failure .result-icon {
+            color: #dc3545;
+        }
+
+        .result-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-message {
+            color: #6c757d;
+            margin: 1rem 0;
+        }
+
+        .auto-redirect {
+            color: #007bff;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .payment-result {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .error-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

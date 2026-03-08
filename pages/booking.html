@@ -196,6 +196,125 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Payment Section Styles */
+        .payment-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .payment-summary {
+            margin-bottom: 30px;
+        }
+
+        .payment-summary h3 {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .payment-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .payment-methods h3 {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: #00a8e8;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .payment-option input[type="radio"]:checked {
+            accent-color: #00a8e8;
+        }
+
+        .payment-option-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .payment-option-content i {
+            font-size: 24px;
+            color: #00a8e8;
+            width: 30px;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .payment-desc {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .payment-actions {
+                flex-direction: column;
+            }
+
+            .payment-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -366,6 +485,8 @@
     <script src="../js/modules/doctors.js"></script>
     <script src="../js/modules/appointments.js"></script>
     <script src="../js/modules/notifications.js"></script>
+    <script src="../js/modules/email.js"></script>
+    <script src="../js/modules/payment.js"></script>
     <script src="../js/app.js"></script>
 
     <script>
@@ -477,7 +598,7 @@
             const user = AuthModule.getCurrentUser();
             if (!user) {
                 alert('Vui lòng đăng nhập để đặt lịch');
-                window.location.href = '/pages/login.html';
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -490,20 +611,192 @@
                 return;
             }
 
-            const result = await AppointmentModule.book({
+            // Create appointment data
+            const appointmentData = {
                 doctorId: parseInt(doctorId),
                 date,
                 time: selectedTime,
                 symptoms,
                 appointmentType: 'consultation'
-            });
+            };
 
-            if (result.success) {
-                alert('✅ Đặt lịch thành công!');
-                window.location.href = '/pages/my-appointments.html';
-            } else {
-                alert('❌ Lỗi: ' + result.message);
+            // Calculate fee
+            const doctor = DoctorModule.getAll().find(d => d.id === parseInt(doctorId));
+            const fee = PaymentModule.calculateAppointmentFee(appointmentData, doctor);
+
+            // Show payment step
+            showPaymentStep(appointmentData, doctor, fee);
+        }
+
+        function showPaymentStep(appointmentData, doctor, fee) {
+            // Hide booking form and show payment
+            document.querySelector('.booking-form').style.display = 'none';
+            document.querySelector('.doctor-preview').style.display = 'none';
+
+            // Create payment section
+            const paymentSection = document.createElement('div');
+            paymentSection.className = 'payment-section';
+            paymentSection.innerHTML = `
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Thanh toán</div>
+                </div>
+
+                <div class="payment-summary">
+                    <h3>Tóm tắt thanh toán</h3>
+                    <div class="payment-details">
+                        <div class="payment-row">
+                            <span>Bác sĩ:</span>
+                            <strong>${doctor.name}</strong>
+                        </div>
+                        <div class="payment-row">
+                            <span>Chuyên khoa:</span>
+                            <strong>${doctor.specialty}</strong>
+                        </div>
+                        <div class="payment-row">
+                            <span>Ngày khám:</span>
+                            <strong>${formatDate(appointmentData.date)}</strong>
+                        </div>
+                        <div class="payment-row">
+                            <span>Giờ khám:</span>
+                            <strong>${appointmentData.time}</strong>
+                        </div>
+                        <div class="payment-row">
+                            <span>Phí khám:</span>
+                            <strong>${formatCurrency(fee)} VND</strong>
+                        </div>
+                        ${appointmentData.symptoms ? `
+                            <div class="payment-row">
+                                <span>Triệu chứng:</span>
+                                <strong>${appointmentData.symptoms}</strong>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Chọn phương thức thanh toán</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="vnpay" checked>
+                            <div class="payment-option-content">
+                                <i class="fas fa-credit-card"></i>
+                                <div>
+                                    <div class="payment-name">VNPay</div>
+                                    <div class="payment-desc">Thanh toán qua VNPay</div>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="momo">
+                            <div class="payment-option-content">
+                                <i class="fas fa-wallet"></i>
+                                <div>
+                                    <div class="payment-name">MoMo</div>
+                                    <div class="payment-desc">Ví điện tử MoMo</div>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="bank">
+                            <div class="payment-option-content">
+                                <i class="fas fa-university"></i>
+                                <div>
+                                    <div class="payment-name">Chuyển khoản</div>
+                                    <div class="payment-desc">Chuyển khoản ngân hàng</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-actions">
+                    <button type="button" class="btn btn-outline" onclick="backToBooking()">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="processPayment(${JSON.stringify(appointmentData).replace(/"/g, '&quot;')}, ${fee})">
+                        <i class="fas fa-credit-card"></i> Thanh toán ${formatCurrency(fee)} VND
+                    </button>
+                </div>
+            `;
+
+            document.querySelector('.booking-container').appendChild(paymentSection);
+        }
+
+        function backToBooking() {
+            // Remove payment section and show booking form
+            const paymentSection = document.querySelector('.payment-section');
+            if (paymentSection) {
+                paymentSection.remove();
             }
+            document.querySelector('.booking-form').style.display = 'block';
+            document.querySelector('.doctor-preview').style.display = 'block';
+        }
+
+        async function processPayment(appointmentData, fee) {
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+            // Set payment provider
+            PaymentModule.setPaymentProvider(paymentMethod);
+
+            // Show loading
+            const payButton = document.querySelector('.payment-actions .btn-primary');
+            const originalText = payButton.innerHTML;
+            payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            payButton.disabled = true;
+
+            try {
+                // First, create the appointment
+                const result = await AppointmentModule.book(appointmentData);
+
+                if (!result.success) {
+                    throw new Error(result.message);
+                }
+
+                const appointment = result.appointment;
+
+                // Initialize payment
+                const paymentResult = await PaymentModule.initializePayment(
+                    appointment,
+                    fee,
+                    `Thanh toán lịch hẹn với ${appointment.doctorName}`
+                );
+
+                if (paymentResult.success) {
+                    if (paymentResult.paymentUrl) {
+                        // Redirect to payment gateway
+                        window.location.href = paymentResult.paymentUrl;
+                    } else {
+                        // Mock payment success - redirect to result page
+                        const params = new URLSearchParams({
+                            success: 'true',
+                            transactionId: paymentResult.transactionId,
+                            amount: fee,
+                            appointmentId: appointment.id
+                        });
+                        window.location.href = `payment-result.html?${params.toString()}`;
+                    }
+                } else {
+                    throw new Error(paymentResult.message || 'Không thể khởi tạo thanh toán');
+                }
+
+            } catch (error) {
+                alert('❌ Lỗi thanh toán: ' + error.message);
+                payButton.innerHTML = originalText;
+                payButton.disabled = false;
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
         }
     </script>
 </body>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - WebHopital</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Dashboard</span>
+            </div>
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Trang chủ
+                </a>
+                <div class="nav-user">
+                    <span id="userName">Admin</span>
+                    <button id="logoutBtn" class="btn btn-sm btn-outline">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="sidebar-menu">
+                <button class="sidebar-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="sidebar-item" data-tab="doctors">
+                    <i class="fas fa-user-md"></i>
+                    <span>Quản lý Bác sĩ</span>
+                </button>
+                <button class="sidebar-item" data-tab="appointments">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Quản lý Lịch hẹn</span>
+                </button>
+                <button class="sidebar-item" data-tab="users">
+                    <i class="fas fa-users"></i>
+                    <span>Quản lý Người dùng</span>
+                </button>
+                <button class="sidebar-item" data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+                <div class="page-header">
+                    <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+                    <p>Tổng quan hệ thống</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Tổng người dùng</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalDoctors">0</h3>
+                            <p>Tổng bác sĩ</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalAppointments">0</h3>
+                            <p>Tổng lịch hẹn</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">0đ</h3>
+                            <p>Doanh thu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>Trạng thái lịch hẹn</h3>
+                        <canvas id="appointmentStatusChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Lịch hẹn theo tháng</h3>
+                        <canvas id="monthlyAppointmentsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctors Tab -->
+            <div id="doctorsTab" class="tab-content">
+                <div class="page-header">
+                    <h1><i class="fas fa-user-md"></i> Quản lý Bác sĩ</h1>
+                    <button id="addDoctorBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm bác sĩ
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <table id="doctorsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên</th>
+                                <th>Chuyên khoa</th>
+                                <th>Bệnh viện</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Đánh giá</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorsTableBody">
+                            <!-- Doctors will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div id="appointmentsTab" class="tab-content">
+                <div class="page-header">
+                    <h1><i class="fas fa-calendar-check"></i> Quản lý Lịch hẹn</h1>
+                    <div class="filters">
+                        <select id="appointmentStatusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending">Chờ xác nhận</option>
+                            <option value="confirmed">Đã xác nhận</option>
+                            <option value="completed">Hoàn thành</option>
+                            <option value="cancelled">Đã hủy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Bệnh nhân</th>
+                                <th>Bác sĩ</th>
+                                <th>Ngày</th>
+                                <th>Giờ</th>
+                                <th>Triệu chứng</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTableBody">
+                            <!-- Appointments will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="usersTab" class="tab-content">
+                <div class="page-header">
+                    <h1><i class="fas fa-users"></i> Quản lý Người dùng</h1>
+                </div>
+
+                <div class="data-table">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Vai trò</th>
+                                <th>Ngày tạo</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content">
+                <div class="page-header">
+                    <h1><i class="fas fa-cog"></i> Cài đặt Hệ thống</h1>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Quản lý Dữ liệu</h3>
+                    <div class="settings-actions">
+                        <button id="resetSystemBtn" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Reset Hệ thống
+                        </button>
+                        <p class="warning-text">⚠️ Hành động này sẽ xóa tất cả dữ liệu và tạo lại tài khoản admin mặc định</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add/Edit Doctor Modal -->
+    <div id="doctorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="doctorModalTitle">Thêm bác sĩ</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="doctorForm">
+                <div class="form-group">
+                    <label for="doctorName">Tên bác sĩ *</label>
+                    <input type="text" id="doctorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctorSpecialty">Chuyên khoa *</label>
+                    <select id="doctorSpecialty" required>
+                        <option value="">Chọn chuyên khoa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="doctorHospital">Bệnh viện *</label>
+                    <input type="text" id="doctorHospital" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctorExperience">Kinh nghiệm *</label>
+                    <input type="text" id="doctorExperience" placeholder="VD: 10 năm" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctorRating">Đánh giá (1-5)</label>
+                    <input type="number" id="doctorRating" min="1" max="5" step="0.1" value="4.5">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('doctorModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Appointment Details Modal -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết lịch hẹn</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="appointmentDetails">
+                <!-- Appointment details will be loaded here -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('appointmentModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/utils/constants.js"></script>
+    <script src="../js/utils/storage.js"></script>
+    <script src="../js/modules/auth.js"></script>
+    <script src="../js/modules/doctors.js"></script>
+    <script src="../js/modules/appointments.js"></script>
+    <script src="../js/modules/notifications.js"></script>
+    <script src="../js/modules/admin.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
